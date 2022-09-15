@@ -536,18 +536,20 @@ p1: Pagination = BlogOrm.query.paginate(page=4, per_page=5)
 # p: Pagination = BlogOrm.query.paginate(per_page=per_page)
 ```
 
-# flask一些常见扩展
+# 更多扩展
+
+> 更多扩展的demo代码，可以参考我的另外一个flaskdemo项目: [flaskS](https://github.com/xmlclone/flaskS/tree/main/flask-9999-ext)
 
 1. flask-admin: 一个类似django admin的后台管理插件
-2. flask-sqlalchemy: 一个基于sqlalchemy的ORM插件
+2. [flask-sqlalchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/): 一个基于sqlalchemy的ORM插件
 3. flask-migrate: 一个sqlalchemy迁移工具
-4. flask-jwt-extended: 一个JWT认证插件
+4. [flask-jwt-extended](https://flask-jwt-extended.readthedocs.io/en/stable/): 一个JWT认证插件
 5. flask-limiter: 接口请求频率限制插件
 6. flask-mail: 邮件插件
-7. flask-wtf: wtf表单插件
-8. flask-login: 认证
+7. [flask-wtf](https://flask-wtf.readthedocs.io/en/1.0.x/): wtf表单插件
+8. [flask-login](http://www.pythondoc.com/flask-login/): 认证
 9. flask-script: 插件脚本
-10. flask-restful: restful插件
+10. [flask-restful](http://www.pythondoc.com/Flask-RESTful/index.html): restful插件
 11. flask-bootstrap: bootstrap插件
 12. flask-moment: 本地化日志和时间插件
 13. Connexion - Swagger/OpenAPI 第一个基于 Flask 的 Python 框架，具有自动端点验证和 OAuth2 支持
@@ -571,44 +573,44 @@ p1: Pagination = BlogOrm.query.paginate(page=4, per_page=5)
 31. Flask-Session - Flask 的服务器端会话扩展
 32. Flask-Caching - 为 Flask 添加简单的缓存支持
 33. flask-heroku-cacheify - Heroku 上的自动 Flask 缓存配置
-35. flask-babel - i18n 和 l10n 支持基于 Babel 和 pytz 的 Flask
-36. SQLAlchemy-Searchable - Flask-SQLAlchemy 的全文搜索（仅限 Postgres）
-37. Flask-Dramatiq - Flask 应用程序的Dramatiq集成。
-38. huey - python 的一个小任务队列
-39. Flask-RQ - Flask 应用程序的 RQ（Redis 队列）集成
-40. celery - 分布式任务队列
-41. sentry-sdk - Sentry的Python 客户端。
-42. airbrake-python -Airbrake的Python 客户端
-43. flask-zipkin - 使用Zipkin进行分布式跟踪。
-44. Flask-OpenTracing - 使用OpenTracing进行分布式跟踪。
-45. elastic-apm - Python 的弹性 APM 代理
-46. Flask-GoogleMaps - 在我们的 Flask 模板中构建和嵌入谷歌地图
-47. Flask-Gravatar - Flask 中小而简单的 gravatar 用法
-48. Flask-Pusher - Flask 的 Pusher 集成
-49. Flask-Azure-Storage - 提供与 Azure 存储集成的 Flask 扩展
-50. Flask-CORS - 用于处理跨域资源共享 (CORS) 的 Flask 扩展，使跨域 AJAX 成为可能
-51. flask-assets - Flask 网络资产集成
-52. flask-s3 - 从 Amazon S3 无缝地为您的 Flask 应用程序的静态资产提供服务
-53. Flask-SSLify - 在您的 Flask 应用程序上强制使用 SSL
-54. Flask-HTMLmin - Flask html 缩小器
-1. Flasgger - 使用 Swagger 2.0 规范为 Flask 视图创建 API 文档
-1. flask-apispec - 带有烧瓶的简单自记录 API
-1. flask2postman - 从您的 Flask 应用程序生成 Postman 集合
-1. flask_profiler - Flask 的端点分析器/分析器
-1. Flask-DebugToolbar - django 调试工具栏到烧瓶的端口
-1. flask-debug-toolbar-mongo - Flask 调试工具栏的 MongoDB 面板
-1. Flask-Testing - Flask 的单元测试扩展
-1. pytest-flask - 一组用于测试 Flask 应用程序的 pytest 夹具
-1. Flask-MonitoringDashboard - 自动监控 Flask/Python Web 服务不断发展的性能。
-1. nplusone - 使用 Flask 和 SQLAlchemy 自动检测 n+1 查询
-1. connexion - Swagger/OpenAPI 第一个基于 Flask 的 Python 框架，具有自动端点验证和 OAuth2 支持.
-1. flask-marshmallow Flask + marshmallow 用于漂亮的 API
-1. flask-jsonrpc - Flask 驱动站点的基本 JSON-RPC 实现
-1. Flask-Bcrypt - Flask-Bcrypt 是一个 Flask 扩展，为您的应用程序提供 bcrypt 哈希实用程序
-1. Mixer - Mixer 是生成 Django 或 SQLAlchemy 模型实例的应用程序
-1. Flask-FeatureFlags - 一个基于配置启用或禁用功能的 Flask 扩展
-1. Flask-Reggie - Flask URL 路由的正则表达式转换器
-1. Flask-SocketIO - Flask 应用程序的 Socket.IO 集成
-1. Flask-Moment - 使用 moment.js 在 Flask 模板中格式化日期和时间
-1. Flask-Paginate - 对 Flask 的分页支持
-1. Flask-graphql - 为您的 Flask 应用程序添加 GraphQL 支持
+34. flask-babel - i18n 和 l10n 支持基于 Babel 和 pytz 的 Flask
+35. SQLAlchemy-Searchable - Flask-SQLAlchemy 的全文搜索（仅限 Postgres）
+36. Flask-Dramatiq - Flask 应用程序的Dramatiq集成。
+37. huey - python 的一个小任务队列
+38. Flask-RQ - Flask 应用程序的 RQ（Redis 队列）集成
+39. celery - 分布式任务队列
+40. sentry-sdk - Sentry的Python 客户端。
+41. airbrake-python -Airbrake的Python 客户端
+42. flask-zipkin - 使用Zipkin进行分布式跟踪。
+43. Flask-OpenTracing - 使用OpenTracing进行分布式跟踪。
+44. elastic-apm - Python 的弹性 APM 代理
+45. Flask-GoogleMaps - 在我们的 Flask 模板中构建和嵌入谷歌地图
+46. Flask-Gravatar - Flask 中小而简单的 gravatar 用法
+47. Flask-Pusher - Flask 的 Pusher 集成
+48. Flask-Azure-Storage - 提供与 Azure 存储集成的 Flask 扩展
+49. Flask-CORS - 用于处理跨域资源共享 (CORS) 的 Flask 扩展，使跨域 AJAX 成为可能
+50. flask-assets - Flask 网络资产集成
+51. flask-s3 - 从 Amazon S3 无缝地为您的 Flask 应用程序的静态资产提供服务
+52. Flask-SSLify - 在您的 Flask 应用程序上强制使用 SSL
+53. Flask-HTMLmin - Flask html 缩小器
+54. Flasgger - 使用 Swagger 2.0 规范为 Flask 视图创建 API 文档
+55. flask-apispec - 带有烧瓶的简单自记录 API
+56. flask2postman - 从您的 Flask 应用程序生成 Postman 集合
+57. flask_profiler - Flask 的端点分析器/分析器
+58. Flask-DebugToolbar - django 调试工具栏到烧瓶的端口
+59. flask-debug-toolbar-mongo - Flask 调试工具栏的 MongoDB 面板
+60. Flask-Testing - Flask 的单元测试扩展
+61. pytest-flask - 一组用于测试 Flask 应用程序的 pytest 夹具
+62. Flask-MonitoringDashboard - 自动监控 Flask/Python Web 服务不断发展的性能。
+63. nplusone - 使用 Flask 和 SQLAlchemy 自动检测 n+1 查询
+64. connexion - Swagger/OpenAPI 第一个基于 Flask 的 Python 框架，具有自动端点验证和 OAuth2 支持.
+65. flask-marshmallow Flask + marshmallow 用于漂亮的 API
+66. flask-jsonrpc - Flask 驱动站点的基本 JSON-RPC 实现
+67. Flask-Bcrypt - Flask-Bcrypt 是一个 Flask 扩展，为您的应用程序提供 bcrypt 哈希实用程序
+68. Mixer - Mixer 是生成 Django 或 SQLAlchemy 模型实例的应用程序
+69. Flask-FeatureFlags - 一个基于配置启用或禁用功能的 Flask 扩展
+70. Flask-Reggie - Flask URL 路由的正则表达式转换器
+71. Flask-SocketIO - Flask 应用程序的 Socket.IO 集成
+72. Flask-Moment - 使用 moment.js 在 Flask 模板中格式化日期和时间
+73. Flask-Paginate - 对 Flask 的分页支持
+74. Flask-graphql - 为您的 Flask 应用程序添加 GraphQL 支持

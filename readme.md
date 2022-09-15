@@ -29,6 +29,7 @@
 
 1. 使用过flask-pagedown,发现效果不是很好,转而使用富文本编辑器CKEditor,参考的: [为你的Flask项目添加富文本编辑器](https://zhuanlan.zhihu.com/p/23583960?refer=flask)
 2. 后面又使用了[Flask-SimpleMDE](https://flask-simplemde.readthedocs.io/en/latest/)插件来支持md
+3. 三方插件的js代码，如果没有修改原生代码，则未上传到git，另外instance目录也未归档到git
 
 # 一些额外知识记录
 

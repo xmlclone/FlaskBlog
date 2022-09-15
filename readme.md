@@ -178,6 +178,64 @@ a {
 1. [css中float详解](https://blog.csdn.net/pingchuanz/article/details/82903397)
 2. [常见的行内和块级元素](https://www.cnblogs.com/gujun1998/p/13917970.html)
 
+# 扩展插件的用法
+
+## flask-login
+
+```python
+from flask_login import login_user, logout_user, login_required
+# 增加对flask_login的支持
+# 注意在当前使用时Werkzeug2.2.2和Flask-Login==0.6.1貌似不兼容
+# 需要修改site-packages\flask_login\utils.py的如下引入
+# from werkzeug.routing import parse_rule 修改为下面的方式(修改后，重启flask服务)
+# from werkzeug.urls import url_parse as parse_rule
+from flask_login import LoginManager, UserMixin
+
+# 首先必须要有1个User对象，插件提供了一个基本的UserMixin，我们在定义ORM时可以直接继承
+# 注意必须要有1个ID字段，通常情况下ORM也会有此字段
+class UserOrm(db.Model, UserMixin):
+    ...
+
+# 初始化LoginManager，并配置一些基本信息
+# 增加对flask_login的支持
+login_manager = LoginManager()
+# 登录的页面
+login_manager.login_view = 'auth.login'
+# 当用户被重定向到登录页面时flash的消息
+login_manager.login_message = '拒绝访问'
+# 必须设定的回调函数，也就是从session加载用户时使用，必须返回一个User对象或None
+# 这个User类，参考UserMixin的基本实现
+# 回调函数的唯一一个参数是userid，用于唯一标识用户的信息
+@login_manager.user_loader
+def load_user(userid):
+    users = UserService.select(userid=userid)
+    if users:
+        return users[0]
+
+# 在你的登录视图里面，经过确认后，认为用户登录成功则
+login_user(UserOrm())
+
+# 在需要受保护的视图上加上
+@login_required
+def get(self):
+
+# 退出的时候调用
+@bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('blog.index'))
+
+# 在html模板或者python代码里面均可以使用current_user这个对象代表UserOrm，并且其有一些属性可以使用，比如
+current_user.is_authenticated # flask-login的属性，其实也就是上面继承了UserMixin和db.Model时的全部字段均可以使用
+current_user.username # ORM的字段
+current_user.id
+```
+
+> 更多参考: 
+> https://github.com/maxcountryman/flask-login
+> http://www.pythondoc.com/flask-login/
+
 # flask一些常见扩展
 
 1. flask-admin: 一个类似django admin的后台管理插件

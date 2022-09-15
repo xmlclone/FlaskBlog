@@ -7,4 +7,4 @@ def init_app(app: Flask):
     @app.before_request
     def befor_request_events():
         userid = session.get('userid')
-        g.user = UserService.select(userid=userid)[0] if userid else None
+        # g.user = UserService.select(userid=userid)[0] if userid else None

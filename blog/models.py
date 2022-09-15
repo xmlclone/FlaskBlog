@@ -5,6 +5,7 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel, validator
+from flask_login import UserMixin
 
 # flask_sqlalchemy: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
 
@@ -18,7 +19,9 @@ class UserModel(BaseModel):
     class Config:
         orm_mode = True
 
-class UserOrm(db.Model):
+# UserMixin提供了基础的用户类，需要有已下3个属性和1个方法
+# is_authenticated is_active is_anonymous get_id()
+class UserOrm(db.Model, UserMixin):
     # 如果ORM类需要初始化__init__，必须调用父类的__init__
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

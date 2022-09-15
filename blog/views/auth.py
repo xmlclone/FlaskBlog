@@ -2,6 +2,8 @@ import logging
 import functools
 
 from flask import Blueprint, views, render_template, request, flash, redirect, url_for, session, g
+# 增加对flask_login的支持
+from flask_login import login_user, logout_user, login_required
 
 from blog.service import UserService
 
@@ -47,7 +49,40 @@ class LoginView(views.MethodView):
         form = LoginForm()
         return render_template('/auth/login.html', form=form)
 
+    # 增加对flask_login的支持
+    # 下面的post1是原始的判断，没有对flask_login的支持
     def post(self):
+        form = LoginForm()
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            self.logger.debug(f'Login username: {username}, password: {password}')
+            error = None
+            user = UserService.select(username=username)[0]
+            self.logger.debug(f'{user}')
+            if user:
+                if password != user.password:
+                    error = f'密码错误'
+            else:
+                error = f'用户: {username} 不存在'
+            if error:
+                # session.clear()
+                flash(error)
+                return redirect(url_for('auth.login'))
+            # 不在使用session进行存储了
+            # session['userid'] = user.id
+            # 直接调用flask_login提供的login_user存储
+            # 传递的参数一定是一个类似UserMixin的实例，并且一定要有id字段
+            login_user(user)
+            flash(f'用户: {username} 登录成功')
+            return redirect(url_for('blog.index'))
+        else:
+            self.logger.error(f'{form.username.errors}')
+            self.logger.error(f'{form.password.errors}')
+            self.logger.error(f'{form.errors}')
+            return redirect(url_for('auth.login'))
+
+    def post1(self):
         form = LoginForm()
         if form.validate_on_submit():
             username = form.username.data
@@ -85,12 +120,20 @@ class LoginView(views.MethodView):
 bp.add_url_rule('/register', view_func=RegisterView.as_view('register'))
 bp.add_url_rule('/login', view_func=LoginView.as_view('login'))
 
+# 使用flask_login进行登出管理
 @bp.route('/logout')
+@login_required
 def logout():
+    logout_user()
+    return redirect(url_for('blog.index'))
+
+@bp.route('/logout1')
+def logout1():
     session.clear()
     return redirect(url_for('blog.index'))
 
-def login_require(view):
+# flask_login提供了login_required函数，不在使用自定义的
+def login_required(view):
     @functools.wraps(view)
     def wrapper(*args, **kwargs):
         if 'user' in g and g.user is not None:

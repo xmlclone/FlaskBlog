@@ -2,11 +2,15 @@ import logging
 
 from flask import Blueprint, render_template, views, request, flash, redirect, url_for, g
 from flask_sqlalchemy import Pagination
+from flask_login import current_user
 
 from blog.service import BlogService, UserService
 from blog.models import BlogModel
 
-from .auth import login_require
+# flask_login提供了login_required函数，不在使用自定义的
+# from .auth import login_required
+from flask_login import login_required
+
 from .wtf import BlogAddForm, BlogUpdateForm, BlogViewForm
 
 bp = Blueprint('blog', __name__, url_prefix='/blog')
@@ -33,19 +37,19 @@ class BlogAddView(views.MethodView):
     def __init__(self):
         self.logger = logging.getLogger(BlogAddView.__name__)
 
-    @login_require
+    @login_required
     def get(self):
         form = BlogAddForm()
         return render_template('blog/add.html', form=form)
 
-    @login_require
+    @login_required
     def post(self):
         form = BlogAddForm()
         if form.validate_on_submit():
             title = form.title.data
             body = form.body.data
-            self.logger.debug(f'Current create blog user is: {g.user.username}')
-            error = BlogService.insert(title=title, body=body, author_id=g.user.id)
+            self.logger.debug(f'Current create blog user is: {current_user.username}')
+            error = BlogService.insert(title=title, body=body, author_id=current_user.id)
             if error:
                 flash(error)
                 return redirect(url_for('blog.create'))
@@ -61,7 +65,7 @@ class BlogUpdateView(views.MethodView):
     def __init__(self):
         self.logger = logging.getLogger(BlogUpdateView.__name__)
 
-    @login_require
+    @login_required
     def get(self):
         # form = BlogUpdateForm()
         post_id = request.args.get('post_id')
@@ -73,7 +77,7 @@ class BlogUpdateView(views.MethodView):
         # 因为删除要post的ID,故上面是传递了post变量,也可以改为post_id变量,让模板直接获取这个变量即可
         # return render_template('blog/update.html', form=form)
 
-    @login_require
+    @login_required
     def post(self):
         form = BlogUpdateForm()
         post_id = request.args.get('post_id')
@@ -98,7 +102,7 @@ bp.add_url_rule('/add', view_func=BlogAddView.as_view('create'))
 bp.add_url_rule('/update', view_func=BlogUpdateView.as_view('update'))
 
 @bp.route('/delete', methods=['POST'])
-@login_require
+@login_required
 def delete():
     # post_id = request.args.get('post_id')
     post_id = request.form['post_id']

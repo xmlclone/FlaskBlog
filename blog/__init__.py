@@ -21,7 +21,7 @@ def create_app(configfile=None):
     # 事件监听
     from .events import init_app as events_init_app
     events_init_app(app)
-    # 初始化蓝图
+    # 初始化视图
     from .views import init_app as views_init_app
     views_init_app(app)
     # 首页路由

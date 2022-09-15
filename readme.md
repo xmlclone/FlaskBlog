@@ -4,6 +4,7 @@
     - flask_sqlalchemy
     - flask-login
     - flask_wtf
+    - Flask-JWT-Extended
 2. sqlalchemy
 1. wtform
 1. pydantic
@@ -36,7 +37,7 @@
 2. 后面又使用了[Flask-SimpleMDE](https://flask-simplemde.readthedocs.io/en/latest/)插件来支持md
 3. 三方插件的js代码，如果没有修改原生代码，则未上传到git，另外instance目录也未归档到git
 
-# 一些额外知识记录
+# 知识记录
 
 ## flask
 
@@ -170,7 +171,55 @@ a {
     both 左右两侧均不允许
     注意只有左右，没有上下的概念
     */
-    clear: none
+    clear: none;
+
+    /* 另外一种排版方式flex更加简便 */
+    display: flex;
+    /* 水平方向对齐控制
+    justify-content: flex-start; 默认
+    justify-content: flex-end;
+    justify-content: center;
+    justify-content: space-between;
+    justify-content: space-around;
+    */
+
+    /* 垂直方向对齐控制
+    align-items: flex-start;
+    align-items: flex-end;
+    align-items: center;
+    align-items: baseline;
+    前面的几个都是自动适配其包含的内容的高度
+    align-items: stretch; 默认值，在没有设置高度或者auto的时候，将会占满整个父容器(在垂直方向上)
+    */
+
+    /* 容器内元素的布局方式，横向还是纵向，默认是row，即横向
+    注意，如果子元素总宽度或者长度超过了父元素，会溢出.所以给height和width设置值为max-content或者auto可以让父容器自适应子元素的数量
+    flex-direction: row;
+    flex-direction: column;
+    横向或者纵向后，按照元素的逆序排序
+    flex-direction: row-reverse;
+    flex-direction: column-reverse;
+    */
+
+    /*
+    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    flex-wrap: wrap-reverse;
+    */
+
+    /* 是flex-direction和flex-wrap复合写法，顺序不能错
+    flex-flow: column wrap;
+    */
+
+    /* 属性和align-item一样
+    align-content: flex-start;
+    align-content: flex-end;
+    */
+
+    /* 水平居中对齐纵向排列的一种写法 */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 ```
 
@@ -179,9 +228,64 @@ a {
 1. [css中float详解](https://blog.csdn.net/pingchuanz/article/details/82903397)
 2. [常见的行内和块级元素](https://www.cnblogs.com/gujun1998/p/13917970.html)
 
-# 扩展插件的用法
+## javascript
 
-## flask-login
+```js
+// 查找元素
+document.getElementById("id")
+document.getElementsByClassName("class") // 注意这里是获取的Elements，复数哦
+document.querySelector("#id") // 这个也可以获取单个元素
+
+// 获取/设置元素属性
+document.getElementById("id").id
+document.getElementById("id").getAttribute("attr") // 用户自定义的属性无法通过.的方式获取，jquery的attr方法可以兼容两者
+
+// 获取/设置元素内容
+document.getElementById("id").innerText
+```
+
+### jquery
+
+```js
+// 根据class定位元素
+$(".class")
+
+// 根据ID定位元素
+$("#id")
+
+// 直接根据tag定位元素
+$("p")
+
+// 点击事件
+$(".cls").click(function() {})
+
+// 鼠标事件:放置到元素上时
+$(".cls").mouseover(function(){})
+
+// 事件函数内定位当前使用的元素
+$(".cls").click(function() {
+    // 里面可以使用this
+    $(this).css('xxx', 'yyy')
+    // 当然也可以使用相同的元素定位方式
+    $(".cls").css('xxx', 'yyy')
+})
+
+// 访问属性
+$(".cls").attr('id') // 获取id属性，jquery可以获取内置和用户自定义的属性，原生的js的.符号无法获取用户自定义，需要通过getAttribute获取
+
+// 设置css
+$(".cls").css('attr', 'value')
+
+// 发起请求(ajax)
+$.get(url, function(data, status){
+    // status返回的是success或者fail字符串
+    // 如果请求的url响应的是json，我们可以直接通过data.xxx的方式获取对应的属性
+})
+```
+
+## 扩展插件的使用
+
+### flask-login
 
 ```python
 from flask_login import login_user, logout_user, login_required
@@ -236,6 +340,201 @@ current_user.id
 > 更多参考: 
 > 1. https://github.com/maxcountryman/flask-login
 > 1. http://www.pythondoc.com/flask-login/
+
+### Flask-JWT-Extended
+
+json web token
+
+```python
+# 首先增加jwt相关配置
+JWT_SECRET_KEY = SECRET_KEY
+# token携带的位置，默认是headers
+JWT_TOKEN_LOCATION = ["headers", "cookies", "json", "query_string"]
+# 如果允许cookies携带jwt，应该保证只在https协议下传输，应该设置为True，生产环境应该永远为True
+JWT_COOKIE_SECURE = True
+# 设置token过期事件
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=1)
+
+
+# 和大部分插件一样，需要初始化管理器
+jwt = JWTManager()
+jwt.init_app(app: Flask)
+
+# 创建token，identity数据类型任意，比如传递一个userid，或者传递一个user对象均可
+# 然后jwt会调用user_identity_loader的返回值作为实际的加密
+# 当获取信息的时候，会通过user_lookup_loader的方式返回具体的对象
+# 故参考下面的user_identity_loader和user_lookup_loader
+# 这里可以传递一个user对象，但是在user_identity_loader里面返回了user.id作为对象的识别，可以简单理解为jwt使用的是user.id进行token生成
+# 而不是整个user对象
+# 同理在获取用户的时候，我们需要通过user_lookup_callback进行一次转换，把user.id对应的对象实例化出来
+create_access_token(identity, )
+
+# 在受jwt保护的视图下获取当前的identity
+get_jwt_identity()
+
+# jwt_required装饰需要jwt保护的视图
+# 参数: optional默认为False，表示修饰的视图必须受保护；
+#       如果设置为True，表示这个视图可以不受保护，那么视图里面获取identity, current_user， get_current_user()等都是None
+# 参数: locations，是一个列表，表示token所在位置，可参考JWT_TOKEN_LOCATION配置项
+#       JWT_TOKEN_LOCATION是全局的允许token位置，可以通过locations参数定制化某些特定的视图接受token位置
+@jwt_required()
+
+# 可以直接使用current_user代表identity的user对象
+current_user
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+# 这个是在获取对象的时候才会回调，不是每次请求都回调
+# 比如在使用crrent_user或get_current_user()的时候才回调
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    # 默认情况下，jwt_data内容如下
+    # {'fresh': False, 'iat': 1663243159, 'jti': '349eb619-4833-4720-bd70-02d905abec03', 'type': 'access', 'sub': 1, 'nbf': 1663243159, 'exp': 1663244059}
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
+
+# 请求头携带:
+# Authorization: Bearer $token
+
+# 以下的携带方式，均不需要像header一样加前缀，比如Bearer
+# cookies携带:
+# set_access_cookies(resp, token)/unset_jwt_cookies(resp)
+
+# url携带: url?jwt=xxxxxxxxxxxxxx
+
+# json携带: 响应格式需要符合{
+#     'body': {
+#         'access_token': xxx 参数
+#     }
+# }
+
+# 更多的
+# 比如token过期和刷新https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
+```
+
+> 更多参考: 
+> 1. https://blog.csdn.net/weixin_45070175/article/details/118559272
+> 2. https://baobao555.tech/archives/40
+> 3. https://flask-jwt-extended.readthedocs.io/en/stable/
+> 4. https://github.com/xmlclone/flask-jwt-extended
+
+### flask_sqlalchemy
+
+```python
+db = SQLAlchemy()
+db.init_db(app: Flask)
+
+db.drop_all()
+db.create_all()
+
+class UserOrm(db.Model):
+    # 如果ORM类需要初始化__init__，必须调用父类的__init__
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(40), nullable=False)
+
+    # 其它一些字段
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    body = db.Column(db.Text)
+
+# 增加
+db.session.add(UserOrm(username=username, password=password))
+db.session.commit()
+
+# 删除
+BlogOrm.query.filter(BlogOrm.id == blogid).delete()
+# 另外一种可选方式，先查询数据在删除，都需要commit
+# db.session.delete(blog)
+db.session.commit()
+
+# 修改
+BlogOrm.query.filter(BlogOrm.id == blogid).update({
+    BlogOrm.body: body, 
+    BlogOrm.title: title,
+    BlogOrm.html: markdown(body, output_format='html')
+})
+# 另外一种可选方式，先查询在更新，都需要commit
+# blog.title = title
+# blog.body = body
+db.session.commit()
+
+# 查询
+UserOrm.query.all()
+UserOrm.query.filter(UserOrm.id == userid).all()
+# 排序
+BlogOrm.query.filter(BlogOrm.author_id == author_id).order_by(BlogOrm.created.desc()).all()
+BlogOrm.query.filter(BlogOrm.id == blogid).order_by(BlogOrm.created).all() #默认是asc
+# 获取一个或者返回none、或者抛出404
+User.query.filter_by(username=username).one_or_none()
+BlogOrm.query.filter(BlogOrm.id == 1).first_or_404()
+BlogOrm.query.get_or_404(-1) #需要一个primary key作为参数
+
+
+# 分页
+# 注意paginate是flask-sqlalchemy插件的功能，原生的sqlalchemy并没有这个功能，但是可以通过limit等方式实现，也可参考flask插件的方式实现
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery.paginate
+# 当前验证期间BlogOrm共有9条数据，以下输出均是基于此数据进行的验证
+'''
+# demo1
+p: Pagination = BlogOrm.query.paginate()
+print(f'paginate object: {p}')
+print(f'paginate total: {p.total}') #9
+print(f'paginate page: {p.page}') #1
+print(f'paginate pages: {p.pages}') #1
+print(f'paginate has_next: {p.has_next}') #False
+print(f'paginate has_prev: {p.has_prev}') #False
+print(f'paginate items: {p.items}') #[<BlogOrm 1>, <BlogOrm 2>, <BlogOrm 3>, <BlogOrm 4>, <BlogOrm 5>, <BlogOrm 6>, <BlogOrm 7>, <BlogOrm 8>, <BlogOrm 9>]
+print(f'paginate next_num: {p.next_num}') #None
+print(f'paginate per_page : {p.per_page}') #20
+print(f'paginate prev_num : {p.prev_num}') #None
+print(f'paginate query : {p.query}') #具体的query对象， 打印出来就是一个select语句
+# SELECT blog.id AS blog_id, blog.author_id AS blog_author_id, blog.created AS blog_created, blog.title AS blog_title, blog.body AS blog_body, blog.star AS blog_star, blog.html AS blog_html FROM blog
+print(f'paginate prev : {p.prev()}')
+print(f'paginate next : {p.next()}')
+for page in p.iter_pages():
+    print(f'paginate iter_pages : {page}') #1
+'''
+
+# demo2
+# 会执行多条sql语句，一条是limit ? offset ?，另外一条是count(*)，也就是limit限制的是per_page参数，offset是根据上一次查询的偏移量
+# 其实是根据(page - 1) * per_page获取到的数据，即flask_sqlalchemy并没有记录相关的偏移量，是根据我们传递的参数进行计算的
+p: Pagination = BlogOrm.query.paginate(per_page=5) #per_page指定每页最大数量
+# print(f'paginate object: {p}')
+# print(f'paginate total: {p.total}') #9
+# print(f'paginate page: {p.page}') #1 当前页
+# print(f'paginate pages: {p.pages}') #2 总页数
+# print(f'paginate has_next: {p.has_next}') #True 因为有两页，并且当前在第一页
+# print(f'paginate has_prev: {p.has_prev}') #False
+# print(f'paginate items: {p.items}') #[<BlogOrm 1>, <BlogOrm 2>, <BlogOrm 3>, <BlogOrm 4>, <BlogOrm 5>] 当前页的数据
+# print(f'paginate next_num: {p.next_num}') #2 下一页序号
+# print(f'paginate per_page : {p.per_page}') #5 每页数量
+# print(f'paginate prev_num : {p.prev_num}') #None 上一页序号
+# print(f'paginate query : {p.query}') #具体的query对象， 打印出来就是一个select语句
+# # SELECT blog.id AS blog_id, blog.author_id AS blog_author_id, blog.created AS blog_created, blog.title AS blog_title, blog.body AS blog_body, blog.star AS blog_star, blog.html AS blog_html FROM blog
+# print(f'paginate prev : {p.prev()}') # 上一页对象，虽然没有，但是也是一个对象
+# print(f'paginate next : {p.next()}') # 下一页对象
+# for page in p.iter_pages():
+#     print(f'paginate iter_pages : {page}, items: {type(page)}') #1 2
+
+p1: Pagination = BlogOrm.query.paginate(page=1, per_page=5) #page参数表示从当前页获取per_page条数据
+p1: Pagination = BlogOrm.query.paginate(page=2, per_page=5)
+p1: Pagination = BlogOrm.query.paginate(page=3, per_page=5)
+p1: Pagination = BlogOrm.query.paginate(page=4, per_page=5)
+# print(f'p1 paginate items: {p1.items}') #[<BlogOrm 6>, <BlogOrm 7>, <BlogOrm 8>, <BlogOrm 9>]
+
+# iter_pages(left_edge=2,left_current=2,right_current=5,right_edge=2)
+# 假设当前共有100页，当前页为50页，按照默认的参数设置调用iter_pages获得的列表为：
+# [1,2,None,48,49,50,51,52,53,54,55,None,99,100]
+# 即edge表示最前最后显示的数量，current表示当前页前后显示的数量
+
+# p: Pagination = BlogOrm.query.paginate(per_page=per_page)
+```
 
 # flask一些常见扩展
 

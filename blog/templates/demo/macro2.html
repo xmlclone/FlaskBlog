@@ -1,0 +1,22 @@
+{# 
+{% from 'demo/macro1.html' import add %}
+上面的直接导入方式，那么macro1.html里面是无法通过{{ var }}的方式访问render_template传递的变量的
+但是通过with context的方式后就可以直接使用
+#}
+{% from 'demo/macro1.html' import add with context %}
+
+{# 也可以直接在当前页面定义宏，里面可以直接访问render_template传递的变量 #}
+{% macro add1(a, b) %}
+    <p>{{ a + b }}</p>{{ var }}
+{% endmacro %}
+
+<html>
+    <title>
+        This is macro demo
+    </title>
+    <body>
+        <h1>Demo</h1>
+        <p>{{ add(1, 2) }}</p>
+        {{ add1(2, 3) }}
+    </body>
+</html>

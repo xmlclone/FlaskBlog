@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}编辑 "{{ post['title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {{ form.csrf_token }}
+        <label for="title">{{ form.title.label }}</label>
+        {# {{ form.title(value=post['title']) }} #}
+        {# 对照auth.register所述,这里可以给字段传递参数,比如默认的value值,我们还可以修改id或者name等属性(默认的id和name属性和字段的label相同) #}
+        {# 比如我要自定义id,那么应该写为:  {{ form.title(value=post['title'], id='newID') }} #}
+        {# <input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required> #}
+        {# 还有第二种方式,就是直接在代码里面初始化Form实例的时候传递默认值,这个值修改的是表单内容,参考python代码 #}
+        {{ form.title }}
+        <label for="body">{{ form.body.label }}</label>
+        {# <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea> #}
+        {# {{ form.body(class="ckeditor") }} #}
+        {{ form.body }}
+        {{ simplemde.load }}
+        {{ form.submit }}
+    </form>
+    <hr>
+    <form action="{{ url_for('blog.delete') }}" method="post">
+    {# <form action="{{ url_for('blog.delete', post_id=post['id']) }}" method="post"> #}
+        {{ form.csrf_token }}
+        {# 采用在form里面携带信息,而不是直接通过url携带 #}
+        <input type="hidden" name="post_id" value="{{ post['id'] }}">
+        <input type="submit" value="删除" class="denger" onclick="return confirm('确认删除?');">
+    </form>
+{% endblock %}

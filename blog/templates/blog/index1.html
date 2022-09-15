@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %} 文章列表 {% endblock %}</h1>
+    {% if g.user %}
+        <a href="{{ url_for('blog.create') }}" class="action">新建</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+        <article class="post">
+            <header>
+                <div>
+                    <h1><a href="{{ url_for('blog.view', post_id=post['id']) }}">{{ post['title'] }}</a></h1>
+                    <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                {% if g.user['id'] == post['author_id'] %}
+                    <a href="{{ url_for('blog.update', post_id=post['id']) }}" class="action">编辑</a>
+                {% endif %}
+            </header>
+            {#<p class="body">#}
+                {# {% if post['body'].split('\r\n')|length>3 %}
+                    {{ '\r\n'.join(post['body'].split('\r\n')[:3]) }}
+                    <p><a href="{{ url_for('blog.view', post_id=post['id']) }}">查看全文</p>
+                {% else %}
+                    {{ post['body'] }}
+                {% endif %} #}
+                {#{{ post['html']|safe }}#}
+                {#
+                下面是以前使用flask-pagedown插件时使用的, 效果不好,注释掉
+                {{ post['form']['body'] }}
+                #}
+            {#</p>#}
+        </article>
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

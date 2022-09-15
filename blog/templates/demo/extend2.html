@@ -1,0 +1,6 @@
+{# 就算扩展的模板和当前模板在同一个目录下，仍然需要使用路径方式，因为flask寻找的默认路径是templates，不是当前文件的相对路径 #}
+{% extends 'demo/extend1.html' %}
+
+{% block title %} new {% endblock %}
+{% block header %} new {% endblock %}
+{% block content %} new {% endblock %}

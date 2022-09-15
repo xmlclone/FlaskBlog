@@ -1,0 +1,117 @@
+{# 这里只是一个demo，没有调整格式，也没有具体的url实现 #}
+
+{% macro render_page1(pagination, endpoint) %}
+    {# pagination是每次传递的单个page页面，并不是整个pagination #}
+    <ul class="pagination">
+        {# 如果有上一页(最后的下一页同理)，那么上一页可以点击；如果没有，则无法点击 #}
+        {% if pagination.has_prev %}
+            <li class="page-item"><a href="{{ url_for(endpoint, page=pagination.prev) }}"><</a></li>
+        {% else %}
+            <li class="page-item"><</li>
+        {% endif %}
+
+        {% for page in pagination.iter_pages(left_current=2,right_current=5) %}
+            {# 遍历页面，如果当前页面是遍历的页面，则无法点击；否则可以点击，另外如果页面过多，也不会显示所有页面索引，部分应该隐藏，使用了html实体... #}    
+            {% if page %}
+                {% if page == pagination.page %}
+                    <li class="page-item active">{{ page }}</li>
+                {% else %}
+                    <li class="page-item"><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+                {% endif %}
+            {% else %}
+                {# 这个实体避免了使用三个.，这个实体对外呈现...，但是是作为一体呈现 #}
+                <li class="page-item">&hellip;</li>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+            <li class="page-item"><a href="{{ url_for(endpoint, page=pagination.next) }}">></a></li>
+        {% else %}
+            <li class="page-item">></li>
+        {% endif %}
+    </ul>
+{% endmacro %}
+
+{# 下面一个更简单，直接不判断上一页下一页等功能。这个翻页组件没有使用任何css样式，方便与上面一个进行对比 #}
+{% macro render_page2(pagination, endpoint) %}
+<ul>
+    {% for page in pagination.iter_pages(left_current=2,right_current=5) %}
+    {# 遍历页面，如果当前页面是遍历的页面，则无法点击；否则可以点击，另外如果页面过多，也不会显示所有页面索引，部分应该隐藏，使用了html实体... #}    
+    {% if page %}
+        {% if page == pagination.page %}
+            <li>{{ page }}</li>
+        {% else %}
+            <li><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+        {% endif %}
+    {% else %}
+        {# 这个实体避免了使用三个.，这个实体对外呈现...，但是是作为一体呈现 #}
+        &hellip;
+    {% endif %}
+    {% endfor %}
+</ul>
+{% endmacro %}
+
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+                background-color: aquamarine;
+            }
+
+            ul.pagination {
+                /* 取消li前面的实体符号 */
+                list-style-type: none;
+                /* 设置背景色 */
+                background-color: blue;
+                /* 过多的导航会被隐藏 */
+                overflow: hidden;
+                /**/
+                margin: 0px;
+                padding: 0px;
+                /* 自动适应li的宽度 */
+                width: max-content;
+                float: right;
+            }
+
+            li a {
+                /* 取消超链接的下划线 */
+                text-decoration: none;
+                /* 列表文字呈现白色 */
+                color: white;
+            }
+
+            li.page-item {
+                /* 让列表的元素居中显示 */
+                text-align: center;
+                /* 列表文字呈现白色 */
+                color: white;
+                /* 让元素浮动起来 */
+                float: left;
+                /* 增加一定的间距 */
+                padding: 0px 5px 0px 5px;
+                /* 每个导航之间增加一条类似竖线的分隔符 */
+                border-left: 1px;
+                border-style: solid;
+                border-color: white;
+            }
+
+            li.active {
+                /* 当前激活页文字颜色 */
+                color: gray;
+            }
+
+            li a:hover {
+                /* 鼠标移动到超链接文字上背景进行变化 */
+                background-color: black;
+            }
+        </style>
+    </head>
+    <body>
+        {{ render_page1(pagination, 'blog.index') }}
+        
+        <br/>
+        {{ render_page2(pagination, 'blog.index') }}
+    </body>
+</html>

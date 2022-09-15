@@ -1,0 +1,11 @@
+<html>
+    <title>abc{% block title %} {% endblock %}</title>
+
+    <body>
+        <h1>{% block header %} {% endblock %}def</h1>
+        {# extends的方式可以直接访问render_template传递的变量 #}
+        <p>{% block content %} 123 {% endblock %} {{ var }} </p> {# 在block中间的数据会被直接替换覆盖 #}
+    </body>
+
+    <footer>some footer</footer>
+</html>

@@ -1,0 +1,63 @@
+{#
+1. 常见的行内和块级元素: https://www.cnblogs.com/gujun1998/p/13917970.html
+2. float详解: https://blog.csdn.net/pingchuanz/article/details/82903397
+#}
+
+<html>
+    <head>
+        <style>
+            a.inline {
+                display: inline;
+                /* 行内元素设置的宽高无效，增加背景色是为了凸显宽高 */
+                width: 200px;
+                height: 600px;
+                background-color: red;
+                /*
+                maring分别表示上右下左
+                也可以省略，如果只有1个，表示4个方向
+                如果有两个，分别表示上下、左右
+                如果有3个，分别表示上、左右、下
+                padding也类似
+                */
+                border: 5px;
+                border-style: solid;
+                border-color: black;
+                /* 行内元素margin和padding只有左右生效，上下不生效 */
+                margin: 100px 200px 50px 100px;
+                /* 但是设置时，发现padding的上下也生效了，通过background-color可以看见，但是对其它元素的位置没有产生影响 */
+                padding: 30px 200px 50px 100px;
+            }
+
+            a.block {
+                /* display有4个取值，
+                none就是不渲染元素(注意和visibility属性的区别) 
+                block表示是块级元素
+                inline表示是内联元素
+                */
+                display: block;
+                /* 块级元素设置的宽高生效，增加背景色是为了凸显宽高 */
+                width: 200px;
+                height: 600px;
+                margin: 100px 200px;
+                padding: 100px;
+                border: 5px;
+                border-style: solid;
+                border-color: black;
+                background-color: gray;
+            }
+
+            p.inline {
+                display: inline;
+            }
+        </style>
+    </head>
+    <body>
+        <p>other1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</p>
+        {# a默认是内联，故下面两个输出在同一行 #}
+        <a class="inline">123</a>  <a>123</a>
+        {# 指定了display:block后变成了块级元素，所以换行了 #}
+        <a class="block">456</a>
+        {# 也可以把块级元素转换为行内元素 #}
+        <p class="inline">abc</p><p class="inline">def</p>
+    </body>
+</html>

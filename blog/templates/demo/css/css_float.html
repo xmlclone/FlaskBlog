@@ -1,0 +1,48 @@
+{#
+1. 常见的行内和块级元素: https://www.cnblogs.com/gujun1998/p/13917970.html
+2. float详解: https://blog.csdn.net/pingchuanz/article/details/82903397
+#}
+
+<html>
+    <head>
+        <style>
+            a {
+                float: left;
+                background-color: rebeccapurple;
+                /* 浮动起来后，宽高都可以生效了，不用设置display:block生效了 */
+                width: 100px;
+                height: 200px;
+                border: 3px;
+                border-style: solid;
+                margin: 10px;
+                padding: 0px;
+                text-align: center;
+            }
+
+            p.float {
+                /* 浮动起来后，块级元素可以在同一行了，不用设置display:inline也可以生效 */
+                float: left;
+                border: 3px;
+                border-style: solid;
+                margin: 0px;
+                padding: 0px;
+                text-align: center;
+                height: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <a>a1</a><a>a2</a>
+        <p class="float">p1</p><p class="float">p2</p>
+
+
+        {# 下面两个元素没有进行浮动，按照标准文档流的排列，span会按照标准从左往右，从上往下排列，遇到了另外一个float的容器
+            开始进行排序，同理第二个p也是一样按照标准排列，它是块级元素，所以会和span换行
+
+            可以把上面的float改为right尝试第二次
+            span按照标准从左往右排列，左边这次没有任何内容，直接从头开始
+        #}
+        <span>fadsfasdfasdfasd</span>
+        <p>fdfadf</p>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header%}
+    <h1>{% block title %}注册{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {{ form.csrf_token }}
+        <label for="username">{{ form.username.label }}</label>
+        {{ form.username }}
+        <label for="password">{{ form.password.label }}</label>
+        <!-- 直接使用form.password和for.password()其实是一个意思 -->
+        <!-- 因为form.password的__str__返回的是self()，也就是调用了其__call__ -->
+        <!-- 那么我们通过form.password()这种方式还可以传递一些参数 -->
+        {{ form.password() }}
+        {{ form.submit }}
+    </form>
+{% endblock %}

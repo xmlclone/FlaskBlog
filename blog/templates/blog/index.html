@@ -1,0 +1,34 @@
+{% from 'components/pagination.html' import render_pagenumber %}
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %} 文章列表 {% endblock %}</h1>
+    {% if g.user %}
+        <a href="{{ url_for('blog.create') }}" class="action">新建</a>
+    {% endif %}
+{% endblock %}
+
+{% macro render_page(pagination) %}
+    {% for item in pagination.items %}
+        <article class="post">
+            <header>
+                <div>
+                    <h1>{{ item['title'] }}</h1>
+                    <div class="about">by {{ item['username'] }} on {{ item['created'].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                {% if g.user['id'] == item['author_id'] %}
+                    <a href="{{ url_for('blog.update', post_id=item['id']) }}" class="action">编辑</a>
+                {% endif %}
+            </header>
+            <p>
+                {{ item['body'] }}
+            </p>
+        </article>
+        <hr>
+    {% endfor %}
+    {{ render_pagenumber(pagination, 'blog.index', per_page) }}
+{% endmacro %}
+
+{% block content %}
+    {{ render_page(pagination) }}
+{% endblock %}

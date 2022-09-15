@@ -1,0 +1,9 @@
+<html>
+    <title>include demo</title>
+    {# include 是直接把另外的页面包含进来 #}
+    {% include 'demo/include1.html' %}
+    {# 如果模板不存在，导入会报错，可以通过ignore mission屏蔽错误 #}
+    {% include 'demo/include4.html' ignore missing %}
+    {# 有文章说支持列表模式，但实践发现只有第一个可以生效，列表后续元素并没有生效 #}
+    {% include ['demo/include1.html','bottom.html','end.html'] %}
+</html>

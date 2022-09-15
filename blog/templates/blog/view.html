@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <article class="post">
+        <div>
+            {# <h1>{{ post['title'] }}</h1> #}
+            <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+        </div>
+        <p class="body">{{ post['html']|safe }}</p>
+        {# {{ simplemde.load }} #}
+        {# 下面是使用ckeditor的方式,因为ckeditor是基于html源代码的,所以需要使用|safe进行转义
+        <p class="body">{{ post['body']|safe }}</p> #}
+        {# 下面是以前使用flask-pagedown插件时使用的, 效果不好,注释掉
+        <p class="body">
+            {{ form.body(only_preview=True) }}
+            <div class="hidden">{{ form.body(only_input=True) }}</div>
+        </p> #}
+        {# <p class="star"><a href="{{ url_for('blog.like', post_id=post['id']) }}">点赞[{{ post['star'] }}]</a></p> #}
+        {# js脚本无法使用{{}}的方式获取具体的变量，故这里先构造好变量，js可以通过获取元素属性进行定位 #}
+        <p class="star" id="star" extra_url="{{ url_for('blog.like', post_id=post['id']) }}">赞[{{ post['star'] }}]</p>
+    </article>
+
+    {% raw %}
+    <script>
+        // 点赞点击后增加1发送到后端，并且获取后端返回，局部更新点赞数据
+        // 避免先前直接redirect的方式刷新整个页面，导致失去用户焦点(直接跳到文章开始了，如果文章很长，用户阅读到最后点赞后自动跳到开始了体验不好)
+        $(".star").click(function() {
+            // console.log(document.getElementById("star").id);
+            // 默认的.方式只能获取内置属性，要访问自定义属性，需要通过getAttribute方法
+            // jquery获取的方式更加方便: $(this).attr('extra_url')就可以获取了，不管这个属性是内置的还是自定义的都可以
+            let element = document.getElementById("star");
+            let url = element.getAttribute("extra_url");
+            // 另外一种通过class查找的方式，注意没有getElementByClassName，只有document.getElementsByClassName(注意和前面的Element，这里是Elements)
+            // console.log(document.querySelector("#star").id);
+            $.get(url, function(data, status){
+                if (status == 'success') {
+                    // console.log(typeof status);
+                    element.innerText = `赞[${data.star}]`;
+                    console.log(data.star);
+                } else {
+                    alert('点赞失败');
+                }
+            })
+        })
+
+        // 普通的p元素，鼠标是text样式，可点击的应该变成一个手型
+        // 更多样式可以参考: https://blog.csdn.net/weixin_39437489/article/details/125208420
+        // 注意jquery里面要使用css设置，不能像文章通过$(this).style.cursor='pointer'的方式设置
+        $(".star").mouseover(function(){
+            $(this).css('cursor', 'pointer')
+        })
+    </script>
+    {% endraw %}
+{% endblock %}

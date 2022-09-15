@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}新建文章{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {{ form.csrf_token }}
+        <label for="title">{{ form.title.label }}</label>
+        {{ form.title }}
+        <label for="body">{{ form.body.label }}</label>
+        {# 使用ckeditor富文本编辑器的方式
+        {{ form.body(class="ckeditor") }} #}
+        {{ form.body }}
+        {# load会渲染找到的第一个textarea,如果需要指定textarea,
+            那么需要使用{{ simplemde.load_id("editor") }},其中editor是你的textaread的id属性 #}
+        {{ simplemde.load }}
+        <input type="submit" value="保存">
+    </form>
+{% endblock %}

@@ -1,0 +1,94 @@
+<html>
+    {#
+        1. https://blog.csdn.net/weixin_41044151/article/details/114071215
+    #}
+    <head>
+        <style>
+            body {
+                margin: 1rem;
+                padding: 0;
+            }
+
+            .box {
+                display: flex;
+                /* 水平方向对齐控制
+                justify-content: flex-start; 默认
+                justify-content: flex-end;
+                justify-content: center;
+                justify-content: space-between;
+                justify-content: space-around;
+                */
+
+                /* 垂直方向对齐控制
+                align-items: flex-start;
+                align-items: flex-end;
+                align-items: center;
+                align-items: baseline;
+                前面的几个都是自动适配其包含的内容的高度
+                align-items: stretch; 默认值，在没有设置高度或者auto的时候，将会占满整个父容器(在垂直方向上)
+                */
+
+                /* 容器内元素的布局方式，横向还是纵向，默认是row，即横向
+                注意，如果子元素总宽度或者长度超过了父元素，会溢出.所以给height和width设置值为max-content或者auto可以让父容器自适应子元素的数量
+                flex-direction: row;
+                flex-direction: column;
+                横向或者纵向后，按照元素的逆序排序
+                flex-direction: row-reverse;
+                flex-direction: column-reverse;
+                */
+
+                /*
+                flex-wrap: nowrap;
+                flex-wrap: wrap;
+                flex-wrap: wrap-reverse;
+                */
+
+                /* 是flex-direction和flex-wrap复合写法，顺序不能错
+                flex-flow: column wrap;
+                */
+
+                /* 属性和align-item一样
+                align-content: flex-start;
+                align-content: flex-end;
+                */
+
+                /* 水平居中对齐纵向排列的一种写法 */
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                /* height: max-content; */
+                height: auto;
+                
+                border: 5px;
+                border-style: solid;
+                border-color: blue;
+                padding: 0;
+                margin: 0;
+                background-color: red;
+            }
+            
+            .content {
+                margin: 5px;
+                padding: 0;
+                border: 2px;
+                border-style: solid;
+                border-color: blueviolet;
+            }
+
+            p {
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <div class="content"><p>This is page1.</p></div>
+            <div class="content"><p>This is page2.</p></div>
+            <div class="content"><p>This is page3.</p></div>
+            <div class="content"><p>This is page4.</p></div>
+        </div>
+    </body>
+</html>

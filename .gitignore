@@ -1,3 +1,6 @@
+blog/static/js/ckeditor
+blog/static/js/jquery.js
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

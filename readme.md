@@ -1,6 +1,9 @@
 # 项目使用到的一些内容记录
 
 1. flask
+    - flask_sqlalchemy
+    - flask-login
+    - flask_wtf
 2. sqlalchemy
 1. wtform
 1. pydantic
@@ -13,8 +16,6 @@
 5. html
 1. css
 1. sqlite
-
-> 后续增加redis mysql/pgsql vue等的使用集成
 
 ## 项目自定义的一些组件/框架
 

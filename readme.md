@@ -233,8 +233,8 @@ current_user.id
 ```
 
 > 更多参考: 
-> https://github.com/maxcountryman/flask-login
-> http://www.pythondoc.com/flask-login/
+> 1. https://github.com/maxcountryman/flask-login
+> 1. http://www.pythondoc.com/flask-login/
 
 # flask一些常见扩展
 
